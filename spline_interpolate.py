@@ -3,43 +3,49 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 
-data = np.loadtxt('input.csv', delimiter=',')
-k = data[:, 0].tolist()
-energy = data[:, 1].tolist()
-knew = np.linspace(k[0], k[-1], num=len(k)*500)
+def main():
 
-# liner interpolation
-liner = interpolate.interp1d(k, energy)
+    data = np.loadtxt('input.csv', delimiter=',')
+    k = data[:, 0].tolist()
+    energy = data[:, 1].tolist()
+    knew = np.linspace(k[0], k[-1], num=len(k)*500)
 
-# 3d spline interpolation
-cubic = interpolate.interp1d(k, energy, kind="cubic")
+    # liner interpolation
+    liner = interpolate.interp1d(k, energy)
 
-# 0d spline interpolation
-zero = interpolate.interp1d(k, energy, kind="zero")
+    # 3d spline interpolation
+    cubic = interpolate.interp1d(k, energy, kind="cubic")
 
-# 秋間法
-akima = interpolate.Akima1DInterpolator(k, energy)
+    # 0d spline interpolation
+    zero = interpolate.interp1d(k, energy, kind="zero")
 
-plt.plot(k, energy, "o")
-plt.plot(knew, liner(knew), "b", label="Liner interpolation")
-plt.plot(knew, cubic(knew), "r", label="3d Spline interpolation")
-plt.plot(knew, akima(knew), "g", label="Akima interpolation")
-plt.plot(knew, zero(knew), "m", label="0d Spline interpolation")
-plt.xlim([0.99, 1.00])
-plt.ylim([0.40,0.55])
-plt.legend()
-plt.savefig("bandstructure.png")
+    # 秋間法
+    akima = interpolate.Akima1DInterpolator(k, energy)
 
-# difference 
-dx = (k[-1] - k[0])/len(k)*500
-dot_np = np.gradient(cubic(knew), dx)
-plt.figure()
-plt.plot(knew, dot_np)
-plt.xlim([0.99, 1.00])
-plt.savefig("gradient_1.png")
+    plt.plot(k, energy, "o")
+    plt.plot(knew, liner(knew), "b", label="Liner interpolation")
+    plt.plot(knew, cubic(knew), "r", label="3d Spline interpolation")
+    plt.plot(knew, akima(knew), "g", label="Akima interpolation")
+    plt.plot(knew, zero(knew), "m", label="0d Spline interpolation")
+    plt.xlim([0.99, 1.00])
+    plt.ylim([0.40,0.55])
+    plt.legend()
+    plt.savefig("bandstructure.png")
 
-dot2_np = np.gradient(dot_np, dx)
-plt.figure()
-plt.plot(knew, dot2_np)
-plt.xlim([0.99, 1.00])
-plt.savefig("gradient_2.png")
+    # difference 
+    dx = (k[-1] - k[0])/len(k)*500
+    dot_np = np.gradient(cubic(knew), dx)
+    plt.figure()
+    plt.plot(knew, dot_np)
+    plt.xlim([0.99, 1.00])
+    plt.savefig("gradient_1.png")
+
+    dot2_np = np.gradient(dot_np, dx)
+    plt.figure()
+    plt.plot(knew, dot2_np)
+    plt.xlim([0.99, 1.00])
+    plt.savefig("gradient_2.png")
+
+
+if __name__ == "__main__":
+    main()
