@@ -46,6 +46,17 @@ def main():
     plt.xlim([0.99, 1.00])
     plt.savefig("gradient_2.png")
 
+    new_band_structure = np.zeros(((len(knew)), 2))
+    
+    print(len(new_band_structure[:, 0]))
+    print(len(knew))
+    new_band_structure[:, 0] = knew
+    new_band_structure[:, 1] = cubic(knew)
+    with open("interpolated_band_structure.csv", "w") as mycsv:
+        csvwriter = csv.writer(mycsv, delimiter=',')
+        csvwriter.writerows(new_band_structure)
+    
+
 
 if __name__ == "__main__":
     main()
